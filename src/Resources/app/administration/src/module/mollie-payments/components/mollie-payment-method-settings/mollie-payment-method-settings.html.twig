@@ -1,0 +1,15 @@
+{% block test %}
+    <div>
+        <sw-sales-channel-switch :label="$tc('sw-settings.system-config.labelSalesChannelSelect')"
+                                 @change-sales-channel-id="onSalesChannelChanged">
+        </sw-sales-channel-switch>
+
+        hello
+        {{ currentSalesChannelId }}
+
+        <br>
+
+Am I Mollie? {{ isMolliePaymentMethod }}
+    </div>
+
+{% endblock %}
