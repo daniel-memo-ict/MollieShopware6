@@ -1,13 +1,11 @@
 {% block mollie_payment_method_settings %}
-    <sw-card>
-        <template #content>
-
+    <sw-card title="Mollie">
+        <template>
             <sw-sales-channel-switch :label="$tc('sw-settings.system-config.labelSalesChannelSelect')"
                                      @change-sales-channel-id="onSalesChannelChanged">
             </sw-sales-channel-switch>
 
-            hello
-            {{ currentSalesChannelId }}
+            {{ settings }}
         </template>
     </sw-card>
 {% endblock %}

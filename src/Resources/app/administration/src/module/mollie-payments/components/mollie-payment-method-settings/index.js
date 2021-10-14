@@ -41,29 +41,24 @@ Component.register('mollie-payment-method-settings', {
     data() {
         return {
             currentSalesChannelId: this.salesChannelId,
+            paymentMethodApi: null,
             isLoading: false,
         };
     },
 
     computed: {
-        isMolliePaymentMethod() {
-            // TODO: When refactoring manufacturer this probably also needs to change to "handler_mollie"
-            return this.paymentMethod.formattedHandlerIdentifier.startsWith('handler_kiener');
+        isNotDefaultSalesChannel() {
+            return this.currentSalesChannelId !== null;
+        },
+
+        settings() {
+            let settings = this.getSettingsForSalesChannel(this.currentSalesChannelId);
+            if(!settings) {
+                settings = this.getSettingsForSalesChannel(null);
+            }
+            return settings;
         }
-        // isNotDefaultSalesChannel() {
-        //     return this.currentSalesChannelId !== null;
-        // },
-
     },
-
-    // watch: {
-    //     actualConfigData: {
-    //         handler() {
-    //             this.emitConfig();
-    //         },
-    //         deep: true
-    //     }
-    // },
 
     created() {
         this.createdComponent();
@@ -71,11 +66,26 @@ Component.register('mollie-payment-method-settings', {
 
     methods: {
         createdComponent() {
-            console.log('hoi');
+            this.$root.$on('mollie-payments-save-payment-method', () => {
+                this.saveSalesChannelPaymentMethodSettings();
+            })
         },
+
         onSalesChannelChanged(salesChannelId) {
             this.currentSalesChannelId = salesChannelId;
         },
 
+        getSettingsForSalesChannel(salesChannelId) {
+            // Get the customFields from translated, as this will have the settings for the default language,
+            // instead of from regular customFields.
+            const allSettings = this.paymentMethod.translated.customFields.mollie_payments.settings;
+
+            const settings = allSettings.filter(setting => setting.salesChannelId === salesChannelId);
+            return settings.length >= 1 ? settings[0] : null;
+        },
+
+        saveSalesChannelPaymentMethodSettings() {
+            console.log(this.currentSalesChannelId, 'order');
+        }
     }
 });
