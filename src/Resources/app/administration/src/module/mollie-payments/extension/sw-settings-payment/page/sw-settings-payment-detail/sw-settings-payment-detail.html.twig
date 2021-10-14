@@ -1,0 +1,8 @@
+{% block sw_settings_payment_detail_content_card %}
+    {% parent %}
+
+    <mollie-payment-method-settings
+        v-if="isMolliePaymentMethod"
+        :paymentMethod="paymentMethod">
+    </mollie-payment-method-settings>
+{% endblock %}

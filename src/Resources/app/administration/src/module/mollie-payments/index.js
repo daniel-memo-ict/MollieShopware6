@@ -1,7 +1,9 @@
-import './extension/sw-customer';
-import './extension/sw-order';
 import './components/mollie-test-api-key';
 import './components/mollie-payment-method-settings';
+
+import './extension/sw-customer';
+import './extension/sw-order';
+import './extension/sw-settings-payment'
 
 import deDE from './snippet/de-DE.json';
 import enGB from './snippet/en-GB.json';

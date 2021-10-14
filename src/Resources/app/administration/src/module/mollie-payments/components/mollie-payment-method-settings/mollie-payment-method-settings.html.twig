@@ -1,15 +1,13 @@
-{% block test %}
-    <div>
-        <sw-sales-channel-switch :label="$tc('sw-settings.system-config.labelSalesChannelSelect')"
-                                 @change-sales-channel-id="onSalesChannelChanged">
-        </sw-sales-channel-switch>
+{% block mollie_payment_method_settings %}
+    <sw-card>
+        <template #content>
 
-        hello
-        {{ currentSalesChannelId }}
+            <sw-sales-channel-switch :label="$tc('sw-settings.system-config.labelSalesChannelSelect')"
+                                     @change-sales-channel-id="onSalesChannelChanged">
+            </sw-sales-channel-switch>
 
-        <br>
-
-Am I Mollie? {{ isMolliePaymentMethod }}
-    </div>
-
+            hello
+            {{ currentSalesChannelId }}
+        </template>
+    </sw-card>
 {% endblock %}
