@@ -1,14 +1,15 @@
 import template from './mollie-payment-method-settings.html.twig';
 // import './sw-system-config.scss';
 
-const { Component, Mixin } = Shopware;
+const {Component, Mixin} = Shopware;
+const {mapState} = Shopware.Component.getComponentHelper();
 // const { object, string: { kebabCase } } = Shopware.Utils;
 
 Component.register('mollie-payment-method-settings', {
 
     template,
 
-    // inject: ['systemConfigApiService'],
+    inject: ['repositoryFactory'],
 
     // mixins: [
     //     Mixin.getByName('notification'),
@@ -41,22 +42,70 @@ Component.register('mollie-payment-method-settings', {
     data() {
         return {
             currentSalesChannelId: this.salesChannelId,
-            paymentMethodApi: null,
             isLoading: false,
+            paymentApis: [
+                {
+                    label: "Order Api",
+                    value: "order",
+                    disabled: false
+                },
+                {
+                    label: "Payment Api",
+                    value: "payment",
+                    disabled: false
+                }
+            ],
+
+            // see @Administration/app/component/structure/sw-language-info/index.js
+            parentLanguage: {name: ''},
         };
     },
 
     computed: {
+        availablePaymentApis() {
+            return this.paymentApis;
+        },
+
         isNotDefaultSalesChannel() {
             return this.currentSalesChannelId !== null;
         },
 
+        defaultSettings() {
+            return this.getSettingsForSalesChannel(null) || {};
+        },
+
         settings() {
             let settings = this.getSettingsForSalesChannel(this.currentSalesChannelId);
-            if(!settings) {
+            if (!settings) {
                 settings = this.getSettingsForSalesChannel(null);
             }
-            return settings;
+            return settings || {salesChannelId: this.currentSalesChannelId};
+        },
+
+        // see @Administration/app/component/structure/sw-language-info/index.js
+        ...mapState('context', {
+            languageId: state => state.api.languageId,
+            systemLanguageId: state => state.api.systemLanguageId,
+            language: state => state.api.language
+        }),
+
+        languageRepository() {
+            return this.repositoryFactory.create('language');
+        },
+
+        isDefaultLanguage() {
+            return this.languageId === this.systemLanguageId;
+        },
+    },
+
+
+    watch: {
+        // see @Administration/app/component/structure/sw-language-info/index.js
+        // Watch the id because of ajax loading
+        'language.name': {
+            handler() {
+                this.refreshParentLanguage().catch(error => warn(error));
+            }
         }
     },
 
@@ -66,9 +115,10 @@ Component.register('mollie-payment-method-settings', {
 
     methods: {
         createdComponent() {
-            this.$root.$on('mollie-payments-save-payment-method', () => {
+            this.$root.$on('mollie-payments-save-payment-method-settings', () => {
                 this.saveSalesChannelPaymentMethodSettings();
-            })
+            });
+            this.refreshParentLanguage();
         },
 
         onSalesChannelChanged(salesChannelId) {
@@ -86,6 +136,27 @@ Component.register('mollie-payment-method-settings', {
 
         saveSalesChannelPaymentMethodSettings() {
             console.log(this.currentSalesChannelId, 'order');
+            this.$emit('mollie-payments-payment-method-settings-saved')
+        },
+
+
+        // see @Administration/app/component/structure/sw-language-info/index.js
+        async refreshParentLanguage() {
+            if (this.language.id.length < 1 || this.isDefaultLanguage) {
+                this.parentLanguage = {name: ''};
+                return;
+            }
+
+            if (this.language.parentId !== null && this.language.parentId.length > 0) {
+                this.parentLanguage = await this.languageRepository.get(this.language.parentId, Shopware.Context.api);
+                return;
+            }
+
+            this.parentLanguage = await this.languageRepository.get(this.systemLanguageId, Shopware.Context.api);
+        },
+
+        onClickParentLanguage() {
+            this.$root.$emit('on-change-language-clicked', this.parentLanguage.id);
         }
     }
 });

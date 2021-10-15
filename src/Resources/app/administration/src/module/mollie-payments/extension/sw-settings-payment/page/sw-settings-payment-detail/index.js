@@ -16,12 +16,12 @@ Shopware.Component.override('sw-settings-payment-detail', {
 
     methods:{
         onSave() {
-            return this.$super('onSave')
-                .then(() => {
-                    if(this.isMolliePaymentMethod) {
-                        this.$root.$emit('mollie-payments-save-payment-method');
-                    }
-                });
+            return this.$super('onSave');
+                // .then(() => {
+                //     if(this.isMolliePaymentMethod) {
+                //         this.$root.$emit('mollie-payments-save-payment-method-settings');
+                //     }
+                // });
         }
     }
 
