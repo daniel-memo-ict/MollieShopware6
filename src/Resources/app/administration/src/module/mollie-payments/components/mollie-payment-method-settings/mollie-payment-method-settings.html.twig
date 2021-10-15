@@ -20,20 +20,19 @@
             <sw-inherit-wrapper
                 v-model="settings.paymentApi"
                 :label="$tc('something.something.label')"
-                :hasParent="isNotDefaultSalesChannel"
-                :inheritedValue="defaultSettings.paymentApi">
+                :hasParent="!isDefaultSalesChannel"
+                :inheritedValue="getInheritedValue('paymentApi')">
                 <template #content="props">
                     <sw-single-select
-                        :mapInheritance="props"
                         :options="availablePaymentApis"
                         :value="props.currentValue"
                         :disabled="props.isInherited"
-                        :key="props.isInheritField + props.isInherited"
                         @input="props.updateCurrentValue"
                         @change="props.updateCurrentValue">
                     </sw-single-select>
                 </template>
             </sw-inherit-wrapper>
+
         </template>
     </sw-card>
 {% endblock %}

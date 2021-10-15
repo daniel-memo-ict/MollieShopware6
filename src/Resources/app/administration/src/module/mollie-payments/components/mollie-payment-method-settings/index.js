@@ -43,14 +43,24 @@ Component.register('mollie-payment-method-settings', {
         return {
             currentSalesChannelId: this.salesChannelId,
             isLoading: false,
+            settings: {},
+            actualSettings: {},
+            defaultSettings: {
+                paymentApi: "order",
+            },
+
             paymentApis: [
                 {
+                    name: "Order Api",
                     label: "Order Api",
+                    id: "order",
                     value: "order",
                     disabled: false
                 },
                 {
+                    name: "Payment Api",
                     label: "Payment Api",
+                    id: "payment",
                     value: "payment",
                     disabled: false
                 }
@@ -66,21 +76,17 @@ Component.register('mollie-payment-method-settings', {
             return this.paymentApis;
         },
 
-        isNotDefaultSalesChannel() {
-            return this.currentSalesChannelId !== null;
+        isDefaultSalesChannel() {
+            return this.currentSalesChannelId === null;
         },
 
-        defaultSettings() {
-            return this.getSettingsForSalesChannel(null) || {};
-        },
-
-        settings() {
-            let settings = this.getSettingsForSalesChannel(this.currentSalesChannelId);
-            if (!settings) {
-                settings = this.getSettingsForSalesChannel(null);
-            }
-            return settings || {salesChannelId: this.currentSalesChannelId};
-        },
+        // defaultSettings() {
+        //     return {};//this.getSettingsForSalesChannel();
+        // },
+        //
+        // settings() {
+        //     return {};//this.getSettingsForSalesChannel(this.currentSalesChannelId);
+        // },
 
         // see @Administration/app/component/structure/sw-language-info/index.js
         ...mapState('context', {
@@ -125,18 +131,37 @@ Component.register('mollie-payment-method-settings', {
             this.currentSalesChannelId = salesChannelId;
         },
 
-        getSettingsForSalesChannel(salesChannelId) {
-            // Get the customFields from translated, as this will have the settings for the default language,
-            // instead of from regular customFields.
-            const allSettings = this.paymentMethod.translated.customFields.mollie_payments.settings;
-
-            const settings = allSettings.filter(setting => setting.salesChannelId === salesChannelId);
-            return settings.length >= 1 ? settings[0] : null;
-        },
+        // getSettingsForSalesChannel(salesChannelId = null) {
+        //     if (!this.paymentMethod.customFields) {
+        //         this.paymentMethod.customFields = {};
+        //     }
+        //     if (!this.paymentMethod.customFields.mollie_payments) {
+        //         this.paymentMethod.customFields.mollie_payments = {};
+        //     }
+        //     if (!this.paymentMethod.customFields.mollie_payments.settings) {
+        //         this.paymentMethod.customFields.mollie_payments.settings = {};
+        //     }
+        //     // if (!this.paymentMethod.customFields.mollie_payments.settings[salesChannelId]) {
+        //     //     this.paymentMethod.customFields.mollie_payments.settings[salesChannelId] = {};
+        //     // }
+        //
+        //     return this.paymentMethod.customFields.mollie_payments.settings[salesChannelId] || {paymentApi: null};
+        // },
 
         saveSalesChannelPaymentMethodSettings() {
             console.log(this.currentSalesChannelId, 'order');
             this.$emit('mollie-payments-payment-method-settings-saved')
+        },
+
+
+        getInheritedValue(element) {
+            const value = this.actualSettings.null[element];
+
+            if (value) {
+                return value;
+            }
+
+            return defaultSettings[element];
         },
 
 
