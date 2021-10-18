@@ -139,6 +139,7 @@ Component.register('mollie-payment-method-settings', {
                             ? this.defaultSettings
                             : {};
                 }
+
                 this.actualSettings = this.paymentMethod.customFields.mollie_payments.settings[this.currentSalesChannelId];
             } finally {
                 this.isLoading = false;
@@ -146,9 +147,9 @@ Component.register('mollie-payment-method-settings', {
         },
 
         getInheritedValue(element) {
-            const value = this.actualSettings.null[element] || null;
-            if (value) {
-                return value;
+            if (this.actualSettings.hasOwnProperty('null') &&
+                this.actualSettings.null.hasOwnProperty('element')) {
+                return this.actualSettings.null[element];
             }
 
             return this.defaultSettings[element];
