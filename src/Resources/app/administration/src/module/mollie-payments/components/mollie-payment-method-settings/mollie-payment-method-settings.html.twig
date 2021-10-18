@@ -1,5 +1,5 @@
 {% block mollie_payment_method_settings %}
-    <sw-card title="Mollie">
+    <sw-card v-if="!isLoading && !!paymentMethod" title="Mollie">
         <template v-if="!isDefaultLanguage">
             <sw-alert variant="info">
                 Mollie specific settings are only available in the default language
@@ -11,14 +11,16 @@
             </sw-alert>
         </template>
 
-        <template v-if="isDefaultLanguage">
+        <template #toolbar v-if="salesChannelSwitchable && isDefaultLanguage">
             <sw-sales-channel-switch
                 :label="$tc('sw-settings.system-config.labelSalesChannelSelect')"
                 @change-sales-channel-id="onSalesChannelChanged">
             </sw-sales-channel-switch>
+        </template>
 
+        <template v-if="isDefaultLanguage">
             <sw-inherit-wrapper
-                v-model="settings.paymentApi"
+                v-model="actualSettings.paymentApi"
                 :label="$tc('something.something.label')"
                 :hasParent="!isDefaultSalesChannel"
                 :inheritedValue="getInheritedValue('paymentApi')">
@@ -26,13 +28,12 @@
                     <sw-single-select
                         :options="availablePaymentApis"
                         :value="props.currentValue"
-                        :disabled="props.isInherited"
+                        :disabled="props.isInherited || availablePaymentApis.length <= 1"
                         @input="props.updateCurrentValue"
                         @change="props.updateCurrentValue">
                     </sw-single-select>
                 </template>
             </sw-inherit-wrapper>
-
         </template>
     </sw-card>
 {% endblock %}

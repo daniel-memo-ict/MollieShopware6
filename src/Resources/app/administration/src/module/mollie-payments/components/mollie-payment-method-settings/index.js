@@ -1,20 +1,13 @@
 import template from './mollie-payment-method-settings.html.twig';
-// import './sw-system-config.scss';
 
-const {Component, Mixin} = Shopware;
+const {Component} = Shopware;
 const {mapState} = Shopware.Component.getComponentHelper();
-// const { object, string: { kebabCase } } = Shopware.Utils;
 
 Component.register('mollie-payment-method-settings', {
 
     template,
 
     inject: ['repositoryFactory'],
-
-    // mixins: [
-    //     Mixin.getByName('notification'),
-    //     Mixin.getByName('sw-inline-snippet')
-    // ],
 
     props: {
         paymentMethod: {
@@ -43,7 +36,6 @@ Component.register('mollie-payment-method-settings', {
         return {
             currentSalesChannelId: this.salesChannelId,
             isLoading: false,
-            settings: {},
             actualSettings: {},
             defaultSettings: {
                 paymentApi: "order",
@@ -80,14 +72,6 @@ Component.register('mollie-payment-method-settings', {
             return this.currentSalesChannelId === null;
         },
 
-        // defaultSettings() {
-        //     return {};//this.getSettingsForSalesChannel();
-        // },
-        //
-        // settings() {
-        //     return {};//this.getSettingsForSalesChannel(this.currentSalesChannelId);
-        // },
-
         // see @Administration/app/component/structure/sw-language-info/index.js
         ...mapState('context', {
             languageId: state => state.api.languageId,
@@ -104,7 +88,6 @@ Component.register('mollie-payment-method-settings', {
         },
     },
 
-
     watch: {
         // see @Administration/app/component/structure/sw-language-info/index.js
         // Watch the id because of ajax loading
@@ -119,51 +102,57 @@ Component.register('mollie-payment-method-settings', {
         this.createdComponent();
     },
 
+    mounted() {
+        this.mountedComponent();
+    },
+
     methods: {
         createdComponent() {
-            this.$root.$on('mollie-payments-save-payment-method-settings', () => {
-                this.saveSalesChannelPaymentMethodSettings();
-            });
             this.refreshParentLanguage();
+        },
+
+        mountedComponent() {
+            this.readSettings();
         },
 
         onSalesChannelChanged(salesChannelId) {
             this.currentSalesChannelId = salesChannelId;
+            this.readSettings();
         },
 
-        // getSettingsForSalesChannel(salesChannelId = null) {
-        //     if (!this.paymentMethod.customFields) {
-        //         this.paymentMethod.customFields = {};
-        //     }
-        //     if (!this.paymentMethod.customFields.mollie_payments) {
-        //         this.paymentMethod.customFields.mollie_payments = {};
-        //     }
-        //     if (!this.paymentMethod.customFields.mollie_payments.settings) {
-        //         this.paymentMethod.customFields.mollie_payments.settings = {};
-        //     }
-        //     // if (!this.paymentMethod.customFields.mollie_payments.settings[salesChannelId]) {
-        //     //     this.paymentMethod.customFields.mollie_payments.settings[salesChannelId] = {};
-        //     // }
-        //
-        //     return this.paymentMethod.customFields.mollie_payments.settings[salesChannelId] || {paymentApi: null};
-        // },
+        readSettings() {
+            this.isLoading = true;
 
-        saveSalesChannelPaymentMethodSettings() {
-            console.log(this.currentSalesChannelId, 'order');
-            this.$emit('mollie-payments-payment-method-settings-saved')
+            try {
+                if (!this.paymentMethod.customFields) {
+                    this.paymentMethod.customFields = {};
+                }
+                if (!this.paymentMethod.customFields.mollie_payments) {
+                    this.paymentMethod.customFields.mollie_payments = {};
+                }
+                if (!this.paymentMethod.customFields.mollie_payments.settings) {
+                    this.paymentMethod.customFields.mollie_payments.settings = {};
+                }
+                if (!this.paymentMethod.customFields.mollie_payments.settings[this.currentSalesChannelId]) {
+                    this.paymentMethod.customFields.mollie_payments.settings[this.currentSalesChannelId] =
+                        this.currentSalesChannelId === null
+                            ? this.defaultSettings
+                            : {};
+                }
+                this.actualSettings = this.paymentMethod.customFields.mollie_payments.settings[this.currentSalesChannelId];
+            } finally {
+                this.isLoading = false;
+            }
         },
-
 
         getInheritedValue(element) {
-            const value = this.actualSettings.null[element];
-
+            const value = this.actualSettings.null[element] || null;
             if (value) {
                 return value;
             }
 
-            return defaultSettings[element];
+            return this.defaultSettings[element];
         },
-
 
         // see @Administration/app/component/structure/sw-language-info/index.js
         async refreshParentLanguage() {

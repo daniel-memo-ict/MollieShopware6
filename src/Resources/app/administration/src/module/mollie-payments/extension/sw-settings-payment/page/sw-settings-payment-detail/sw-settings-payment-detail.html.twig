@@ -3,6 +3,7 @@
 
     <mollie-payment-method-settings
         v-if="isMolliePaymentMethod"
-        :paymentMethod="paymentMethod">
+        :paymentMethod="paymentMethod"
+        :salesChannelSwitchable="true">
     </mollie-payment-method-settings>
 {% endblock %}

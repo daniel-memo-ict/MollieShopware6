@@ -13,16 +13,4 @@ Shopware.Component.override('sw-settings-payment-detail', {
             return this.paymentMethod.formattedHandlerIdentifier.startsWith('handler_kiener');
         }
     },
-
-    methods:{
-        onSave() {
-            return this.$super('onSave');
-                // .then(() => {
-                //     if(this.isMolliePaymentMethod) {
-                //         this.$root.$emit('mollie-payments-save-payment-method-settings');
-                //     }
-                // });
-        }
-    }
-
 });
