@@ -9,6 +9,8 @@ import ShopConfigurationAction from "Actions/admin/ShopConfigurationAction";
 import CheckoutAction from 'Actions/storefront/checkout/CheckoutAction';
 import PaymentAction from "Actions/storefront/checkout/PaymentAction";
 import DummyBasketScenario from "Scenarios/DummyBasketScenario";
+import VoucherScreenAction from "Actions/mollie/VoucherScreenAction";
+import PaymentMethodsScreenAction from "Actions/mollie/PaymentMethodsScreenAction";
 
 
 const devices = new Devices();
@@ -18,8 +20,12 @@ const shopware = new Shopware();
 const configAction = new ShopConfigurationAction();
 const checkout = new CheckoutAction();
 const paymentAction = new PaymentAction();
+
 const molliePayment = new PaymentScreenAction();
 const mollieIssuer = new IssuerScreenAction();
+const mollieVoucher = new VoucherScreenAction();
+const molliePaymentMethods = new PaymentMethodsScreenAction();
+
 
 const scenarioDummyBasket = new DummyBasketScenario(3);
 
@@ -28,6 +34,7 @@ const device = devices.getFirstDevice();
 
 
 const payments = [
+    {key: 'voucher', name: 'Voucher'},
     {key: 'paypal', name: 'PayPal'},
     {key: 'klarnapaylater', name: 'Pay later'},
     {key: 'klarnasliceit', name: 'Slice it'},
@@ -47,7 +54,11 @@ context("Checkout Tests", () => {
 
     before(function () {
         devices.setDevice(device);
+
+        // configure our shop
         configAction.setupShop(true, false);
+        // configure our products for vouchers
+        configAction.updateProducts('eco');
     })
 
     beforeEach(() => {
@@ -78,7 +89,7 @@ context("Checkout Tests", () => {
 
                     // verify that we are on the mollie payment screen
                     // and that our payment method is also visible somewhere in that url
-                    cy.url().should('include', 'https://www.mollie.com/paymentscreen/');
+                    cy.url().should('include', 'https://www.mollie.com/checkout/');
                     cy.url().should('include', payment.key);
 
                     // verify that the price is really the one
@@ -95,6 +106,17 @@ context("Checkout Tests", () => {
                     if (payment.key === 'klarnapaylater' || payment.key === 'klarnasliceit') {
 
                         molliePayment.selectAuthorized();
+
+                    } else if (payment.key === 'voucher') {
+
+                        // the sandbox voucher is 10 EUR
+                        // our prices are usually higher
+                        // so Mollie forces us to select another payment method
+                        // to pay the rest of the total amount
+                        mollieVoucher.selectMonizze();
+                        molliePayment.selectPaid();
+                        molliePaymentMethods.selectPaypal();
+                        molliePayment.selectPaid();
 
                     } else {
 

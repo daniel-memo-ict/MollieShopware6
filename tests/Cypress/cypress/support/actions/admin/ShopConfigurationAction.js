@@ -29,36 +29,84 @@ export default class ShopConfigurationAction {
         this.apiClient.get('/sales-channel').then(channels => {
             channels.forEach(channel => {
                 this._configureSalesChannel(channel.id);
+                this._configureMolliePlugin(channel.id, mollieFailureMode, creditCardComponents);
+
             });
         });
 
-        // configure mollie plugin
-        this._configureMolliePlugin(mollieFailureMode, creditCardComponents);
+        // let's just wait a bit
+        cy.wait(10000);
+
+        this._clearCache();
     }
 
     /**
      *
+     * @param voucherValue
+     */
+    updateProducts(voucherValue) {
+
+        if (voucherValue === 'eco') {
+            voucherValue = '1';
+        } else if (voucherValue === 'meal') {
+            voucherValue = '2';
+        } else if (voucherValue === 'gift') {
+            voucherValue = '3';
+        } else {
+            voucherValue = '0';
+        }
+
+        let customFields = null;
+
+        if (voucherValue !== '') {
+            customFields = {
+                'mollie_payments': {
+                    'voucher_type': voucherValue,
+                }
+            }
+        }
+
+
+        this.apiClient.get('/product').then(products => {
+            products.forEach(product => {
+                const data = {
+                    "id": product.id,
+                    "customFields": customFields,
+                };
+                this.apiClient.patch('/product/' + product.id, data);
+            });
+        });
+
+        // let's just wait a bit
+        cy.wait(3000);
+
+        this._clearCache();
+    }
+
+    /**
+     *
+     * @param channelId
      * @param mollieFailureMode
      * @param creditCardComponents
      * @private
      */
-    _configureMolliePlugin(mollieFailureMode, creditCardComponents) {
-        const data = {
-            "null": {
-                "MolliePayments.config.testMode": true,
-                "MolliePayments.config.debugMode": true,
-                // ------------------------------------------------------------------
-                "MolliePayments.config.shopwareFailedPayment": !mollieFailureMode,
-                "MolliePayments.config.enableCreditCardComponents": creditCardComponents,
-                "MolliePayments.config.enableApplePayDirect": true,
-                "MolliePayments.config.paymentMethodBankTransferDueDateDays": 2,
-                "MolliePayments.config.orderLifetimeDays": 4,
-                // ------------------------------------------------------------------
-                "MolliePayments.config.orderStateWithAAuthorizedTransaction": 'in_progress',
-                "MolliePayments.config.orderStateWithAPaidTransaction": 'completed',
-                "MolliePayments.config.orderStateWithAFailedTransaction": 'open',
-                "MolliePayments.config.orderStateWithACancelledTransaction": 'cancelled',
-            }
+    _configureMolliePlugin(channelId, mollieFailureMode, creditCardComponents) {
+        const data = {};
+
+        data[channelId] = {
+            "MolliePayments.config.testMode": true,
+            "MolliePayments.config.debugMode": true,
+            // ------------------------------------------------------------------
+            "MolliePayments.config.shopwareFailedPayment": !mollieFailureMode,
+            "MolliePayments.config.enableCreditCardComponents": creditCardComponents,
+            "MolliePayments.config.enableApplePayDirect": true,
+            "MolliePayments.config.paymentMethodBankTransferDueDateDays": 2,
+            "MolliePayments.config.orderLifetimeDays": 4,
+            // ------------------------------------------------------------------
+            "MolliePayments.config.orderStateWithAAuthorizedTransaction": 'in_progress',
+            "MolliePayments.config.orderStateWithAPaidTransaction": 'completed',
+            "MolliePayments.config.orderStateWithAFailedTransaction": 'open',
+            "MolliePayments.config.orderStateWithACancelledTransaction": 'cancelled',
         };
 
         this.apiClient.post('/_action/system-config/batch', data);
