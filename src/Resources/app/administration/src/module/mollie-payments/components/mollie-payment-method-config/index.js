@@ -1,9 +1,9 @@
-import template from './mollie-payment-method-settings.html.twig';
+import template from './mollie-payment-method-config.html.twig';
 
 const {Component} = Shopware;
 const {mapState} = Shopware.Component.getComponentHelper();
 
-Component.register('mollie-payment-method-settings', {
+Component.register('mollie-payment-method-config', {
 
     template,
 
@@ -36,8 +36,9 @@ Component.register('mollie-payment-method-settings', {
         return {
             currentSalesChannelId: this.salesChannelId,
             isLoading: false,
-            actualSettings: {},
-            defaultSettings: {
+            config:{},
+            actualConfig: {},
+            defaultConfig: {
                 paymentApi: "order",
             },
 
@@ -93,6 +94,7 @@ Component.register('mollie-payment-method-settings', {
         // Watch the id because of ajax loading
         'language.name': {
             handler() {
+                this.onSalesChannelChanged(null);
                 this.refreshParentLanguage().catch(error => warn(error));
             }
         }
@@ -102,25 +104,19 @@ Component.register('mollie-payment-method-settings', {
         this.createdComponent();
     },
 
-    mounted() {
-        this.mountedComponent();
-    },
-
     methods: {
         createdComponent() {
             this.refreshParentLanguage();
-        },
-
-        mountedComponent() {
-            this.readSettings();
+            this.readAll();
+            this.readConfig();
         },
 
         onSalesChannelChanged(salesChannelId) {
             this.currentSalesChannelId = salesChannelId;
-            this.readSettings();
+            this.readConfig();
         },
 
-        readSettings() {
+        readAll() {
             this.isLoading = true;
 
             try {
@@ -130,29 +126,49 @@ Component.register('mollie-payment-method-settings', {
                 if (!this.paymentMethod.customFields.mollie_payments) {
                     this.paymentMethod.customFields.mollie_payments = {};
                 }
-                if (!this.paymentMethod.customFields.mollie_payments.settings) {
-                    this.paymentMethod.customFields.mollie_payments.settings = {};
+                if (!this.paymentMethod.customFields.mollie_payments.config) {
+                    this.paymentMethod.customFields.mollie_payments.config = {};
                 }
-                if (!this.paymentMethod.customFields.mollie_payments.settings[this.currentSalesChannelId]) {
-                    this.paymentMethod.customFields.mollie_payments.settings[this.currentSalesChannelId] =
+
+                this.config = this.paymentMethod.customFields.mollie_payments.config;
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        readConfig() {
+            this.isLoading = true;
+
+            try {
+                if (!this.paymentMethod.customFields) {
+                    this.paymentMethod.customFields = {};
+                }
+                if (!this.paymentMethod.customFields.mollie_payments) {
+                    this.paymentMethod.customFields.mollie_payments = {};
+                }
+                if (!this.paymentMethod.customFields.mollie_payments.config) {
+                    this.paymentMethod.customFields.mollie_payments.config = {};
+                }
+                if (!this.paymentMethod.customFields.mollie_payments.config[this.currentSalesChannelId]) {
+                    this.paymentMethod.customFields.mollie_payments.config[this.currentSalesChannelId] =
                         this.currentSalesChannelId === null
-                            ? this.defaultSettings
+                            ? this.defaultConfig
                             : {};
                 }
 
-                this.actualSettings = this.paymentMethod.customFields.mollie_payments.settings[this.currentSalesChannelId];
+                this.actualConfig = this.paymentMethod.customFields.mollie_payments.config[this.currentSalesChannelId];
             } finally {
                 this.isLoading = false;
             }
         },
 
         getInheritedValue(element) {
-            if (this.actualSettings.hasOwnProperty('null') &&
-                this.actualSettings.null.hasOwnProperty('element')) {
-                return this.actualSettings.null[element];
+            if (this.config.hasOwnProperty('null') &&
+                this.config.null.hasOwnProperty(element)) {
+                return this.config.null[element];
             }
 
-            return this.defaultSettings[element];
+            return this.defaultConfig[element];
         },
 
         // see @Administration/app/component/structure/sw-language-info/index.js

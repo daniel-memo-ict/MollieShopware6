@@ -1,9 +1,10 @@
 {% block sw_settings_payment_detail_content_card %}
     {% parent %}
 
-    <mollie-payment-method-settings
+    <mollie-payment-method-config
         v-if="isMolliePaymentMethod"
+        :isLoading="isLoading"
         :paymentMethod="paymentMethod"
         :salesChannelSwitchable="true">
-    </mollie-payment-method-settings>
+    </mollie-payment-method-config>
 {% endblock %}

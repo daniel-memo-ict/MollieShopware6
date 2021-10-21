@@ -1,5 +1,5 @@
-{% block mollie_payment_method_settings %}
-    <sw-card v-if="!isLoading && !!paymentMethod" title="Mollie">
+{% block mollie_payment_method_config %}
+    <sw-card v-if="!!paymentMethod" title="Mollie" :isLoading="isLoading">
         <template v-if="!isDefaultLanguage">
             <sw-alert variant="info">
                 Mollie specific settings are only available in the default language
@@ -20,7 +20,7 @@
 
         <template v-if="isDefaultLanguage">
             <sw-inherit-wrapper
-                v-model="actualSettings.paymentApi"
+                v-model="actualConfig.paymentApi"
                 :label="$tc('something.something.label')"
                 :hasParent="!isDefaultSalesChannel"
                 :inheritedValue="getInheritedValue('paymentApi')">
