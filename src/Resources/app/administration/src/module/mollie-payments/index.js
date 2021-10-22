@@ -1,10 +1,13 @@
+import './components/mollie-test-api-key';
+import './components/mollie-payment-method-config';
+
 import './extension/sw-customer';
 import './extension/sw-order';
-import './components/mollie-test-api-key';
+import './extension/sw-settings-payment';
 
 import deDE from './snippet/de-DE.json';
 import enGB from './snippet/en-GB.json';
-import nlNL from './snippet/nl-NL.json'
+import nlNL from './snippet/nl-NL.json';
 
 // eslint-disable-next-line no-undef
 const { Module } = Shopware;
