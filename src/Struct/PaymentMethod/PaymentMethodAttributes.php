@@ -68,7 +68,7 @@ class PaymentMethodAttributes extends EntityAttributeStruct
      */
     public function getConfig(): PaymentMethodSalesChannelConfigAttributeCollection
     {
-        return $this->config;
+        return $this->config ?? new PaymentMethodSalesChannelConfigAttributeCollection();
     }
 
     /**
