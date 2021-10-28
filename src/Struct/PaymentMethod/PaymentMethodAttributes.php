@@ -18,7 +18,7 @@ class PaymentMethodAttributes extends EntityAttributeStruct
     /**
      * @var string
      */
-    protected $molliePaymentName;
+    protected $name;
 
     /**
      * @var PaymentMethodSalesChannelConfigAttributeCollection
@@ -27,12 +27,11 @@ class PaymentMethodAttributes extends EntityAttributeStruct
 
     /**
      * @param PaymentMethodEntity $paymentMethod
+     * @throws \Exception
      */
     public function __construct(PaymentMethodEntity $paymentMethod)
     {
         $this->handlerIdentifier = $paymentMethod->getHandlerIdentifier();
-
-        $this->molliePaymentName = '';
 
         $customFields = $paymentMethod->getCustomFields();
 
@@ -40,8 +39,9 @@ class PaymentMethodAttributes extends EntityAttributeStruct
             return;
         }
 
-        if (array_key_exists('mollie_payment_method_name', $customFields)) {
-            $this->molliePaymentName = (string)$customFields['mollie_payment_method_name'];
+        if (array_key_exists('mollie_payment_method_name', $customFields) &&
+            !empty($customFields['mollie_payment_method_name'])) {
+            $this->name = (string)$customFields['mollie_payment_method_name'];
         }
 
         parent::__construct($paymentMethod);
@@ -55,14 +55,12 @@ class PaymentMethodAttributes extends EntityAttributeStruct
         return $this->handlerIdentifier === VoucherPayment::class;
     }
 
-    protected function assignConfig(array $config): void
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
-        $this->config = new PaymentMethodSalesChannelConfigAttributeCollection();
-
-        foreach ($config as $salesChannelId => $_config) {
-            $salesChannelConfig = new PaymentMethodSalesChannelConfigAttributeStruct($_config);
-            $this->config->set($salesChannelId, $salesChannelConfig);
-        }
+        return $this->name;
     }
 
     /**
@@ -71,5 +69,18 @@ class PaymentMethodAttributes extends EntityAttributeStruct
     public function getConfig(): PaymentMethodSalesChannelConfigAttributeCollection
     {
         return $this->config;
+    }
+
+    /**
+     * @param array $config
+     */
+    protected function assignConfig(array $config): void
+    {
+        $this->config = new PaymentMethodSalesChannelConfigAttributeCollection();
+
+        foreach ($config as $salesChannelId => $_config) {
+            $salesChannelConfig = new PaymentMethodSalesChannelConfigAttributeStruct($_config);
+            $this->config->set($salesChannelId, $salesChannelConfig);
+        }
     }
 }
