@@ -13,7 +13,11 @@ class PaymentMethodAttributes extends EntityAttributeStruct
     /**
      * @var string
      */
-    private $handlerIdentifier;
+    protected $handlerIdentifier;
+
+    /**
+     * @var string
+     */
     protected $molliePaymentName;
 
     /**
@@ -26,7 +30,7 @@ class PaymentMethodAttributes extends EntityAttributeStruct
      */
     public function __construct(PaymentMethodEntity $paymentMethod)
     {
-        $this->handlerIdentifier = (string)$paymentMethod->getHandlerIdentifier();
+        $this->handlerIdentifier = $paymentMethod->getHandlerIdentifier();
 
         $this->molliePaymentName = '';
 
