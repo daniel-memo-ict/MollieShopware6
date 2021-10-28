@@ -126,7 +126,9 @@ class PaymentMethodService
                 'mediaId' => $mediaId,
                 'afterOrderEnabled' => true,
                 'customFields' => [
-                    'mollie_payment_method_name' => $paymentMethod['name'],
+                    CustomFieldsInterface::MOLLIE_KEY => [
+                        'name' => $paymentMethod['name'],
+                    ]
                 ],
             ];
 
