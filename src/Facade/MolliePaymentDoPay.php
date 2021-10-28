@@ -10,8 +10,10 @@ use Kiener\MolliePayments\Service\CustomerService;
 use Kiener\MolliePayments\Service\LoggerService;
 use Kiener\MolliePayments\Service\Mollie\MolliePaymentStatus;
 use Kiener\MolliePayments\Service\MollieApi\Builder\MollieOrderBuilder;
+use Kiener\MolliePayments\Service\MollieApi\Builder\MolliePaymentBuilder;
 use Kiener\MolliePayments\Service\MollieApi\Order;
 use Kiener\MolliePayments\Service\MollieApi\OrderDataExtractor;
+use Kiener\MolliePayments\Service\MollieApi\Payment;
 use Kiener\MolliePayments\Service\Order\UpdateOrderLineItems;
 use Kiener\MolliePayments\Service\OrderService;
 use Kiener\MolliePayments\Service\SettingsService;
@@ -35,6 +37,10 @@ class MolliePaymentDoPay
      */
     private $orderBuilder;
     /**
+     * @var MolliePaymentBuilder
+     */
+    private $paymentBuilder;
+    /**
      * @var OrderService
      */
     private $orderService;
@@ -42,6 +48,10 @@ class MolliePaymentDoPay
      * @var Order
      */
     private $orderApiService;
+    /**
+     * @var Payment
+     */
+    private $paymentApiService;
     /**
      * @var CustomerService
      */
@@ -78,8 +88,10 @@ class MolliePaymentDoPay
     public function __construct(
         OrderDataExtractor      $extractor,
         MollieOrderBuilder      $orderBuilder,
+        MolliePaymentBuilder    $paymentBuilder,
         OrderService            $orderService,
         Order                   $orderApiService,
+        Payment                 $paymentApiService,
         CustomerService         $customerService,
         SettingsService         $settingsService,
         UpdateOrderCustomFields $updateOrderCustomFields,
@@ -89,8 +101,10 @@ class MolliePaymentDoPay
     {
         $this->extractor = $extractor;
         $this->orderBuilder = $orderBuilder;
+        $this->paymentBuilder = $paymentBuilder;
         $this->orderService = $orderService;
         $this->orderApiService = $orderApiService;
+        $this->paymentApiService = $paymentApiService;
         $this->customerService = $customerService;
         $this->settingsService = $settingsService;
         $this->updateOrderCustomFields = $updateOrderCustomFields;
@@ -208,6 +222,37 @@ class MolliePaymentDoPay
         }
 
         return $customFieldsStruct->getMolliePaymentUrl() ?? $customFieldsStruct->getTransactionReturnUrl() ?? $transactionStruct->getReturnUrl();
+    }
+
+    public function preparePaymentAtMollie(
+        string                        $paymentMethod,
+        AsyncPaymentTransactionStruct $transactionStruct,
+        SalesChannelContext           $salesChannelContext,
+        PaymentHandler                $paymentHandler
+    ): string
+    {
+        // get order with all needed associations
+        $order = $this->orderService->getOrder($transactionStruct->getOrder()->getId(), $salesChannelContext->getContext());
+
+        if (!$order instanceof OrderEntity) {
+            throw new OrderNotFoundException($transactionStruct->getOrder()->getOrderNumber() ?? $transactionStruct->getOrder()->getId());
+        }
+
+        $paymentData = $this->paymentBuilder->build(
+            $order,
+            $transactionStruct->getOrderTransaction()->getId(),
+            $paymentMethod,
+            $transactionStruct->getReturnUrl(),
+            $salesChannelContext,
+            $paymentHandler
+        );
+
+        // create new order at mollie
+        $molliePayment = $this->paymentApiService->create($paymentData, $salesChannelContext);
+
+        return $molliePayment->getCheckoutUrl();
+
+        dd($molliePayment);
     }
 
     /**

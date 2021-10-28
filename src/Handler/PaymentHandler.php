@@ -7,6 +7,7 @@ use Kiener\MolliePayments\Facade\MolliePaymentDoPay;
 use Kiener\MolliePayments\Facade\MolliePaymentFinalize;
 use Kiener\MolliePayments\Service\LoggerService;
 use Kiener\MolliePayments\Service\Transition\TransactionTransitionServiceInterface;
+use Kiener\MolliePayments\Struct\PaymentMethod\PaymentMethodAttributes;
 use Mollie\Api\Exceptions\ApiException;
 use Monolog\Logger;
 use RuntimeException;
@@ -104,7 +105,18 @@ class PaymentHandler implements AsynchronousPaymentHandlerInterface
     ): RedirectResponse
     {
         try {
-            $paymentUrl = $this->payFacade->preparePayProcessAtMollie($this->paymentMethod, $transaction, $salesChannelContext, $this);
+            $attributes = new PaymentMethodAttributes($transaction->getOrderTransaction()->getPaymentMethod());
+            $config = $attributes->getConfig()->getSalesChannelConfig($salesChannelContext->getSalesChannelId());
+
+            switch ($config->getPaymentApi()) {
+                default:
+                case 'order':
+                    $paymentUrl = $this->payFacade->preparePayProcessAtMollie($this->paymentMethod, $transaction, $salesChannelContext, $this);
+                    break;
+                case 'payment':
+                    $paymentUrl = $this->payFacade->preparePaymentAtMollie($this->paymentMethod, $transaction, $salesChannelContext, $this);
+                    break;
+            }
         } catch (\Exception $exception) {
             $this->logger->addEntry(
                 $exception->getMessage(),

@@ -24,8 +24,10 @@
         <service id="Kiener\MolliePayments\Facade\MolliePaymentDoPay">
             <argument type="service" id="Kiener\MolliePayments\Service\MollieApi\OrderDataExtractor"/>
             <argument type="service" id="Kiener\MolliePayments\Service\MollieApi\Builder\MollieOrderBuilder"/>
+            <argument type="service" id="Kiener\MolliePayments\Service\MollieApi\Builder\MolliePaymentBuilder"/>
             <argument type="service" id="Kiener\MolliePayments\Service\OrderService"/>
             <argument type="service" id="Kiener\MolliePayments\Service\MollieApi\Order"/>
+            <argument type="service" id="Kiener\MolliePayments\Service\MollieApi\Payment"/>
             <argument type="service" id="Kiener\MolliePayments\Service\CustomerService"/>
             <argument type="service" id="Kiener\MolliePayments\Service\SettingsService"/>
             <argument type="service" id="Kiener\MolliePayments\Service\UpdateOrderCustomFields"/>
