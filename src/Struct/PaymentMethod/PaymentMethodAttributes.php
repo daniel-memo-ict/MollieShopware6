@@ -2,6 +2,7 @@
 
 namespace Kiener\MolliePayments\Struct\PaymentMethod;
 
+use Kiener\MolliePayments\Handler\Method\VoucherPayment;
 use Kiener\MolliePayments\Struct\Attribute\EntityAttributeStruct;
 use Kiener\MolliePayments\Struct\Attribute\PaymentMethod\PaymentMethodSalesChannelConfigAttributeCollection;
 use Kiener\MolliePayments\Struct\Attribute\PaymentMethod\PaymentMethodSalesChannelConfigAttributeStruct;
@@ -12,6 +13,7 @@ class PaymentMethodAttributes extends EntityAttributeStruct
     /**
      * @var string
      */
+    private $handlerIdentifier;
     protected $molliePaymentName;
 
     /**
@@ -19,8 +21,12 @@ class PaymentMethodAttributes extends EntityAttributeStruct
      */
     protected $config;
 
+    /**
+     * @param PaymentMethodEntity $paymentMethod
+     */
     public function __construct(PaymentMethodEntity $paymentMethod)
     {
+        $this->handlerIdentifier = (string)$paymentMethod->getHandlerIdentifier();
 
         $this->molliePaymentName = '';
 
@@ -38,11 +44,11 @@ class PaymentMethodAttributes extends EntityAttributeStruct
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getMolliePaymentName(): string
+    public function isVoucherMethod(): bool
     {
-        return $this->molliePaymentName;
+        return $this->handlerIdentifier === VoucherPayment::class;
     }
 
     protected function assignConfig(array $config): void

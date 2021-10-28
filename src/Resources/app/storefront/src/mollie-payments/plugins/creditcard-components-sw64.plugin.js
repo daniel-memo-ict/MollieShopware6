@@ -147,33 +147,37 @@ export default class MollieCreditCardComponentsSw64 extends Plugin {
             this.getInputFields().verificationCode,
         ];
 
-        inputs.forEach((element, index, arr) => {
-            const component = this._componentsObject.createComponent(element.name, me.getDefaultProperties());
-            component.mount(element.id);
-            arr[index][element.name] = component;
+        if (this._componentsObject !== null) {
 
-            // Handle errors
-            component.addEventListener('change', event => {
-                const componentContainer = document.getElementById(`${element.name}`);
-                const componentError = document.getElementById(`${element.errors}`);
+            inputs.forEach((element, index, arr) => {
 
-                if (event.error && event.touched) {
-                    componentContainer.classList.add('error');
-                    componentError.textContent = event.error;
-                } else {
-                    componentContainer.classList.remove('error');
-                    componentError.textContent = '';
-                }
-            });
+                const component = this._componentsObject.createComponent(element.name, me.getDefaultProperties());
+                component.mount(element.id);
+                arr[index][element.name] = component;
 
-            // Handle labels
-            component.addEventListener('focus', () => {
-                me.setFocus(`${element.id}`, true);
+                // Handle errors
+                component.addEventListener('change', event => {
+                    const componentContainer = document.getElementById(`${element.name}`);
+                    const componentError = document.getElementById(`${element.errors}`);
+
+                    if (event.error && event.touched) {
+                        componentContainer.classList.add('error');
+                        componentError.textContent = event.error;
+                    } else {
+                        componentContainer.classList.remove('error');
+                        componentError.textContent = '';
+                    }
+                });
+
+                // Handle labels
+                component.addEventListener('focus', () => {
+                    me.setFocus(`${element.id}`, true);
+                });
+                component.addEventListener('blur', () => {
+                    me.setFocus(`${element.id}`, false);
+                });
             });
-            component.addEventListener('blur', () => {
-                me.setFocus(`${element.id}`, false);
-            });
-        });
+        }
     }
 
     setFocus(componentName, isFocused) {
@@ -189,10 +193,10 @@ export default class MollieCreditCardComponentsSw64 extends Plugin {
         if (
             (
                 creditCardRadioInput === undefined
-              || creditCardRadioInput === null
-              || creditCardRadioInput.checked === false
+                || creditCardRadioInput === null
+                || creditCardRadioInput.checked === false
             )
-          && !!this._confirmForm
+            && !!this._confirmForm
         ) {
             this._confirmForm.submit();
         }
