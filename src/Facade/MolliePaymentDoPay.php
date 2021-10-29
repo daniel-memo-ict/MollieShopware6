@@ -252,7 +252,7 @@ class MolliePaymentDoPay
         $customFieldsStruct = new MollieOrderCustomFieldsStruct($customFields);
         $customFieldsStruct->setTransactionReturnUrl($transactionStruct->getReturnUrl());
 
-        // create new order at mollie
+        // create new payment at mollie
         $molliePayment = $this->paymentApiService->create($paymentData, $salesChannelContext);
 
         if($molliePayment instanceof MolliePayment) {
