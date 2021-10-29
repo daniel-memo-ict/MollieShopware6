@@ -20,6 +20,7 @@ use Kiener\MolliePayments\Service\SettingsService;
 use Kiener\MolliePayments\Service\UpdateOrderCustomFields;
 use Kiener\MolliePayments\Struct\MollieOrderCustomFieldsStruct;
 use Mollie\Api\Resources\Order as MollieOrder;
+use Mollie\Api\Resources\Payment as MolliePayment;
 use Monolog\Logger;
 use Shopware\Core\Checkout\Cart\Exception\OrderNotFoundException;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -247,12 +248,21 @@ class MolliePaymentDoPay
             $paymentHandler
         );
 
+        $customFields = $order->getCustomFields() ?? [];
+        $customFieldsStruct = new MollieOrderCustomFieldsStruct($customFields);
+        $customFieldsStruct->setTransactionReturnUrl($transactionStruct->getReturnUrl());
+
         // create new order at mollie
         $molliePayment = $this->paymentApiService->create($paymentData, $salesChannelContext);
 
-        return $molliePayment->getCheckoutUrl();
+        if($molliePayment instanceof MolliePayment) {
+            $customFieldsStruct->setMolliePaymentId($molliePayment->id);
+            $customFieldsStruct->setMolliePaymentUrl($molliePayment->getCheckoutUrl());
 
-        dd($molliePayment);
+            $this->updateOrderCustomFields->updateOrder($order->getId(), $customFieldsStruct, $salesChannelContext);
+        }
+
+        return $molliePayment->getCheckoutUrl();
     }
 
     /**

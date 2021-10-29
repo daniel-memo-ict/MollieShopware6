@@ -8,6 +8,9 @@ class MollieOrderCustomFieldsStruct
     private $mollieOrderId;
 
     /** @var string|null */
+    private $molliePaymentId;
+
+    /** @var string|null */
     private $transactionReturnUrl;
 
     /** @var string|null */
@@ -37,6 +40,22 @@ class MollieOrderCustomFieldsStruct
     public function setMollieOrderId(?string $mollieOrderId): void
     {
         $this->mollieOrderId = $mollieOrderId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMolliePaymentId(): ?string
+    {
+        return $this->molliePaymentId;
+    }
+
+    /**
+     * @param string|null $molliePaymentId
+     */
+    public function setMolliePaymentId(?string $molliePaymentId): void
+    {
+        $this->molliePaymentId = $molliePaymentId;
     }
 
     /**
@@ -83,6 +102,7 @@ class MollieOrderCustomFieldsStruct
         return [
             'mollie_payments' => [
                 'order_id' => $this->mollieOrderId,
+                'payment_id' => $this->molliePaymentId,
                 'transactionReturnUrl' => (string)$this->transactionReturnUrl,
                 'molliePaymentUrl' => (string)$this->molliePaymentUrl
             ]
