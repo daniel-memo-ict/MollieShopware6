@@ -30,17 +30,6 @@ class OrderStatusUpdater
      */
     private $stateMachineRegistry;
 
-
-    /**
-     *
-     */
-    private const STATE_REFUNDED = 'refunded';
-
-    /**
-     *
-     */
-    private const STATE_REFUNDED_PARTIALLY = 'refunded_partially';
-
     /** @var TransactionTransitionServiceInterface */
     private $transactionTransitionService;
 
@@ -58,7 +47,6 @@ class OrderStatusUpdater
         $this->stateMachineRegistry = $stateMachineRegistry;
         $this->transactionTransitionService = $transactionTransitionService;
     }
-
 
     /**
      * @param OrderTransactionEntity $transaction
