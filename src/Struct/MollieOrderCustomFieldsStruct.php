@@ -95,7 +95,7 @@ class MollieOrderCustomFieldsStruct
      */
     public function getMollieCustomFields(): array
     {
-        if (empty($this->mollieOrderId)) {
+        if (empty($this->mollieOrderId) && empty($this->molliePaymentId)) {
             return ['mollie_payments' => []];
         }
 
@@ -120,6 +120,10 @@ class MollieOrderCustomFieldsStruct
 
         if (isset($customFields['mollie_payments']['order_id'])) {
             $this->setMollieOrderId((string)$customFields['mollie_payments']['order_id']);
+        }
+
+        if (isset($customFields['mollie_payments']['payment_id'])) {
+            $this->setMolliePaymentId((string)$customFields['mollie_payments']['payment_id']);
         }
 
         if (isset($customFields['mollie_payments']['transactionReturnUrl'])) {
