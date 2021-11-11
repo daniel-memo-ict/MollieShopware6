@@ -19,7 +19,7 @@ abstract class EntityAttributeStruct extends AttributeStruct
          * If this entity does not contain getCustomFields, we can't do anything, and we shouldn't even create
          * an attribute struct in the first place.
          */
-        if(!method_exists($entity, 'getCustomFields')) {
+        if (!method_exists($entity, 'getCustomFields')) {
             throw new \Exception('Entity does not contain custom fields');
         }
 
@@ -40,7 +40,7 @@ abstract class EntityAttributeStruct extends AttributeStruct
         /**
          * If we don't have any custom fields, stop and return.
          */
-        if(empty($customFields)) {
+        if (empty($customFields)) {
             return;
         }
 
@@ -64,8 +64,6 @@ abstract class EntityAttributeStruct extends AttributeStruct
      */
     public function toMollieCustomFields(): array
     {
-        // TODO 002 Use original entity to determine which keys come from the system default language and were not changed
-        // TODO 002 We dont want to return those in the array.
         return [CustomFieldsInterface::MOLLIE_KEY => $this->toArray()];
     }
 }
