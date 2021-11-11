@@ -74,7 +74,7 @@ class PaymentMethodAttributes extends EntityAttributeStruct
     /**
      * @param array $config
      */
-    protected function assignConfig(array $config): void
+    protected function constructConfig(array $config): void
     {
         $this->config = new PaymentMethodSalesChannelConfigAttributeCollection();
 
