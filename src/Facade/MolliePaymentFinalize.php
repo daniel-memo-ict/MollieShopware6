@@ -77,13 +77,9 @@ class MolliePaymentFinalize
         $apiClient = $this->mollieApiFactory->getClient($salesChannelContext->getSalesChannel()->getId());
         $mollieOrder = $apiClient->orders->get($mollieOrderId, ['embed' => 'payments']);
 
-        $paymentStatus = $this->orderStatusConverter->getOrderStatus($mollieOrder);
-        $this->orderStatusUpdater->updatePaymentStatus($transactionStruct->getOrderTransaction(), $paymentStatus, $salesChannelContext->getContext());
         $settings = $this->settingsService->getSettings($salesChannelContext->getSalesChannel()->getId());
 
-
-        $paymentStatus = $this->orderStatusConverter->getMollieStatus($mollieOrder);
-
+        $paymentStatus = $this->orderStatusConverter->getOrderStatus($mollieOrder);
 
         # Attention
         # Our payment status will either be set by us, or automatically by Shopware using exceptions below.
@@ -95,7 +91,6 @@ class MolliePaymentFinalize
             $settings,
             $salesChannelContext->getContext()
         );
-
 
         # now either set the payment status for successful payments
         # or make sure to throw an exception for Shopware in case
