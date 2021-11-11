@@ -24,6 +24,12 @@ abstract class EntityAttributeStruct extends AttributeStruct
         }
 
         /**
+         * Store the entity on our struct, because we need to use it later to determine which custom fields
+         * are translated and which come from the system language
+         */
+        $this->addExtension(self::ORIGINAL_ENTITY, $entity);
+
+        /**
          * Use the custom fields from this translated array instead of the regular ones.
          *
          * The getTranslated array contains all the translated fields of this entity, merged on top of the data
