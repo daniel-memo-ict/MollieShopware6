@@ -7,8 +7,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 
 abstract class EntityAttributeStruct extends AttributeStruct
 {
-    private const ORIGINAL_ENTITY = 'originalEntity';
-
     /**
      * @param Entity $entity
      * @throws \Exception
@@ -22,12 +20,6 @@ abstract class EntityAttributeStruct extends AttributeStruct
         if (!method_exists($entity, 'getCustomFields')) {
             throw new \Exception('Entity does not contain custom fields');
         }
-
-        /**
-         * Store the entity on our struct, because we need to use it later to determine which custom fields
-         * are translated and which come from the system language
-         */
-        $this->addExtension(self::ORIGINAL_ENTITY, $entity);
 
         /**
          * Use the custom fields from this translated array instead of the regular ones.
