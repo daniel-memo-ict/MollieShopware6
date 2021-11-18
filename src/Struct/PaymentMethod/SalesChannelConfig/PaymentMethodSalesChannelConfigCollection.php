@@ -4,11 +4,11 @@ namespace Kiener\MolliePayments\Struct\PaymentMethod\SalesChannelConfig;
 
 use Shopware\Core\Framework\Struct\Collection;
 
-class PaymentMethodSalesChannelConfigAttributeCollection extends Collection
+class PaymentMethodSalesChannelConfigCollection extends Collection
 {
-    public function getSalesChannelConfig(string $salesChannelId): PaymentMethodSalesChannelConfigAttributeStruct
+    public function getSalesChannelConfig(string $salesChannelId): PaymentMethodSalesChannelConfig
     {
-        $config = new PaymentMethodSalesChannelConfigAttributeStruct();
+        $config = new PaymentMethodSalesChannelConfig();
 
         $config->merge(new PaymentMethodSalesChannelConfigDefaults());
 

@@ -3,12 +3,12 @@
 namespace Kiener\MolliePayments\Struct\PaymentMethod;
 
 use Kiener\MolliePayments\Handler\Method\VoucherPayment;
-use Kiener\MolliePayments\Struct\Attribute\EntityAttributeStruct;
-use Kiener\MolliePayments\Struct\Attribute\PaymentMethod\PaymentMethodSalesChannelConfigAttributeCollection;
-use Kiener\MolliePayments\Struct\Attribute\PaymentMethod\PaymentMethodSalesChannelConfigAttributeStruct;
+use Kiener\MolliePayments\Service\CustomFieldsInterface;
+use Kiener\MolliePayments\Struct\PaymentMethod\SalesChannelConfig\PaymentMethodSalesChannelConfig;
+use Kiener\MolliePayments\Struct\PaymentMethod\SalesChannelConfig\PaymentMethodSalesChannelConfigCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 
-class PaymentMethodAttributes extends EntityAttributeStruct
+class PaymentMethodAttributes
 {
     /**
      * @var string
@@ -21,7 +21,7 @@ class PaymentMethodAttributes extends EntityAttributeStruct
     protected $name;
 
     /**
-     * @var PaymentMethodSalesChannelConfigAttributeCollection
+     * @var PaymentMethodSalesChannelConfigCollection
      */
     protected $config;
 
@@ -44,7 +44,18 @@ class PaymentMethodAttributes extends EntityAttributeStruct
             $this->name = (string)$customFields['mollie_payment_method_name'];
         }
 
-        parent::__construct($paymentMethod);
+        if (!array_key_exists(CustomFieldsInterface::MOLLIE_KEY, $customFields)
+            || empty($customFields[CustomFieldsInterface::MOLLIE_KEY])) {
+            return;
+        }
+
+        $mollieCustomFields = $customFields[CustomFieldsInterface::MOLLIE_KEY];
+
+        if (array_key_exists('config', $mollieCustomFields)) {
+            $this->buildConfig($mollieCustomFields['config']);
+        } else {
+            $this->buildConfig([]);
+        }
     }
 
     /**
@@ -64,23 +75,23 @@ class PaymentMethodAttributes extends EntityAttributeStruct
     }
 
     /**
-     * @return PaymentMethodSalesChannelConfigAttributeCollection
+     * @return PaymentMethodSalesChannelConfigCollection
      */
-    public function getConfig(): PaymentMethodSalesChannelConfigAttributeCollection
+    public function getConfig()
     {
-        return $this->config ?? new PaymentMethodSalesChannelConfigAttributeCollection();
+        return $this->config;
     }
 
     /**
-     * @param array $config
+     * @param array $configs
      */
-    protected function constructConfig(array $config): void
+    private function buildConfig(array $configs): void
     {
-        $this->config = new PaymentMethodSalesChannelConfigAttributeCollection();
+        $this->config = new PaymentMethodSalesChannelConfigCollection();
 
-        foreach ($config as $salesChannelId => $_config) {
-            $salesChannelConfig = new PaymentMethodSalesChannelConfigAttributeStruct($_config);
-            $this->config->set($salesChannelId, $salesChannelConfig);
+        foreach ($configs as $salesChannelId => $config) {
+            $this->config->set($salesChannelId, new PaymentMethodSalesChannelConfig($config));
         }
     }
+
 }
