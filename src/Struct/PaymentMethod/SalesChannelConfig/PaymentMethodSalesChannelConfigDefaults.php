@@ -1,6 +1,6 @@
 <?php
 
-namespace Kiener\MolliePayments\Struct\Attribute\PaymentMethod;
+namespace Kiener\MolliePayments\Struct\PaymentMethod\SalesChannelConfig;
 
 class PaymentMethodSalesChannelConfigDefaults extends PaymentMethodSalesChannelConfigAttributeStruct
 {
