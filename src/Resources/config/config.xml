@@ -249,4 +249,31 @@
             </options>
         </input-field>
     </card>
+
+    <card>
+        <title>Payment Methods</title>
+        <title lang="de-DE">Zahlungsarten</title>
+        <title lang="nl-NL">Betaalmethodes</title>
+        <input-field type="single-select">
+            <name>defaultPaymentApi</name>
+            <label>Default Payment API</label>
+            <label lang="de-DE">Standard Zahlungs-API</label>
+            <label lang="nl-NL">Standaard Betaling API</label>
+            <defaultValue>order</defaultValue>
+            <options>
+                <option>
+                    <id>order</id>
+                    <name>Order API</name>
+                    <name lang="de-DE">Order API</name>
+                    <name lang="nl-NL">Order API</name>
+                </option>
+                <option>
+                    <id>payment</id>
+                    <name>Payment API</name>
+                    <name lang="de-DE">Payment API</name>
+                    <name lang="nl-NL">Payment API</name>
+                </option>
+            </options>
+        </input-field>
+    </card>
 </config>
