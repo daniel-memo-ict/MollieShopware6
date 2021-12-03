@@ -2,6 +2,7 @@
 
 namespace Kiener\MolliePayments\Struct\Attribute;
 
+use Kiener\MolliePayments\Service\CustomFieldsInterface;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Struct\Collection;
 use Shopware\Core\Framework\Struct\Struct;
@@ -146,13 +147,11 @@ abstract class SimpleAttributeStruct extends Struct
     }
 
     /**
-     * Alias for getVars
-     *
      * @return array<mixed>
      */
-    public function toArray(): array
+    public function toMollieCustomFields(): array
     {
-        return $this->getVars();
+        return [CustomFieldsInterface::MOLLIE_KEY => $this->getVars()];
     }
 
     /**
