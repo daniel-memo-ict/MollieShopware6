@@ -2,9 +2,9 @@
 
 namespace MolliePayments\Tests\Fakes\Attribute;
 
-use Kiener\MolliePayments\Struct\Attribute\EntityAttributeStruct;
+use Kiener\MolliePayments\Struct\Attribute\SimpleEntityAttributeStruct;
 
-class FakeEntityAttributeStruct extends EntityAttributeStruct
+class FakeEntityAttributeStruct extends SimpleEntityAttributeStruct
 {
     /**
      * @var ?string
