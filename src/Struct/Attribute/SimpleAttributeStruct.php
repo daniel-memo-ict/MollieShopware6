@@ -7,7 +7,7 @@ use Shopware\Core\Framework\Struct\Collection;
 use Shopware\Core\Framework\Struct\Struct;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
-abstract class AttributeStruct extends Struct
+abstract class SimpleAttributeStruct extends Struct
 {
     const ADDITIONAL = 'additionalAttributes';
     const CONSTRUCT_KEYS = 'construct_keys';
@@ -158,10 +158,10 @@ abstract class AttributeStruct extends Struct
     /**
      * Merges another attribute struct into this attribute struct
      *
-     * @param AttributeStruct $struct
+     * @param SimpleAttributeStruct $struct
      * @return $this
      */
-    public function merge(AttributeStruct $struct): self
+    public function merge(SimpleAttributeStruct $struct): self
     {
         /**
          * Our class properties are all in camelCase, but our custom fields are stored as snake_case.

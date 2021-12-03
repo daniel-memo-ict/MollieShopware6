@@ -5,7 +5,7 @@ namespace Kiener\MolliePayments\Struct\Attribute;
 use Kiener\MolliePayments\Service\CustomFieldsInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 
-abstract class EntityAttributeStruct extends AttributeStruct
+abstract class EntityAttributeStruct extends SimpleAttributeStruct
 {
     /**
      * @param Entity $entity

@@ -2,9 +2,9 @@
 
 namespace MolliePayments\Tests\Fakes\Attribute;
 
-use Kiener\MolliePayments\Struct\Attribute\AttributeStruct;
+use Kiener\MolliePayments\Struct\Attribute\SimpleAttributeStruct;
 
-class FakeAttributeStruct extends AttributeStruct
+class FakeAttributeStruct extends SimpleAttributeStruct
 {
     /**
      * @var ?string

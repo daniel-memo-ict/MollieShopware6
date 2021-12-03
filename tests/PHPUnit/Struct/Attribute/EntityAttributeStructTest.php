@@ -4,7 +4,7 @@ namespace MolliePayments\Tests\Struct\Attribute;
 
 use Kiener\MolliePayments\Service\CustomFieldsInterface;
 use Kiener\MolliePayments\Struct\Attribute\AttributeCollection;
-use Kiener\MolliePayments\Struct\Attribute\AttributeStruct;
+use Kiener\MolliePayments\Struct\Attribute\SimpleAttributeStruct;
 use MolliePayments\Tests\Fakes\Attribute\FakeAttributeCollection;
 use MolliePayments\Tests\Fakes\Attribute\FakeEntityAttributeStruct;
 use MolliePayments\Tests\Fakes\FakeEntity;
@@ -112,8 +112,8 @@ class EntityAttributeStructTest extends TestCase
         $this->assertTrue($collection->has('foo'));
         $this->assertTrue($collection->has('bar'));
 
-        $this->assertInstanceOf(AttributeStruct::class, $collection->getStructForFakeId('foo'));
-        $this->assertInstanceOf(AttributeStruct::class, $collection->getStructForFakeId('bar'));
+        $this->assertInstanceOf(SimpleAttributeStruct::class, $collection->getStructForFakeId('foo'));
+        $this->assertInstanceOf(SimpleAttributeStruct::class, $collection->getStructForFakeId('bar'));
 
         $foo = $collection->getStructForFakeId('foo');
         $this->assertEquals('foo', $foo->getString());
