@@ -1,5 +1,6 @@
 import './extension/sw-customer';
 import './extension/sw-order';
+import './components/mollie-file-select';
 import './components/mollie-pluginconfig-section-info';
 import './components/mollie-pluginconfig-section-api';
 import './components/mollie-pluginconfig-section-payments';
