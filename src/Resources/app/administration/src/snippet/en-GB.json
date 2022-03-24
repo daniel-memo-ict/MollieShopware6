@@ -12,6 +12,10 @@
       "mollie_webhook_received_status_refunded": " Mollie Webhook Received (Refunded)",
       "mollie_webhook_received_status_partially_refunded": " Mollie Webhook Received (Partially Refunded)",
       "mollie_refund_started": " Mollie Refund started"
+    },
+    "mollie-file-select": {
+      "caption": "Drop files here",
+      "button": "Select files | Select file"
     }
   },
   "mollie-payments": {

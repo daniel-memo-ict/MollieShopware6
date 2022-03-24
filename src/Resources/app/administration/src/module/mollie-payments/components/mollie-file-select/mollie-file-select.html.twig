@@ -1,69 +1,69 @@
-{% block sw_media_upload_v2 %}
-    <div class="sw-media-upload-v2">
+{% block mollie_file_select %}
+    <div class="mollie-file-select">
 
-        <div class="sw-media-upload-v2__content">
-            {% block sw_media_upload_v2_compact %}
+        <div class="mollie-file-select__content">
+            {% block mollie_file_select_compact %}
                 <template v-if="variant == 'button'">
-                    {% block sw_media_upload_v2_compact_button_file_upload %}
+                    {% block mollie_file_select_compact_button_file_upload %}
                         <sw-button
                             :disabled="disabled"
-                            class="sw-media-upload-v2__button-compact-upload"
+                            class="mollie-file-select__button-compact-upload"
                             variant="primary"
                             @click="onClickUpload"
                         >
-                            {{ $tc('global.sw-media-upload-v2.buttonFileUpload') }}
+                            {{ $tc('global.mollie-file-select.button', snippetPlurality) }}
                         </sw-button>
                     {% endblock %}
                 </template>
             {% endblock %}
 
-            {% block sw_media_upload_v2_regular %}
+            {% block mollie_file_select_regular %}
                 <template v-else>
-                    {% block sw_media_upload_v2_regular_header %}
-                        <div v-if="showHeader" class="sw-media-upload-v2__header">
-                            {% block sw_media_upload_v2_regular_header_label %}
+                    {% block mollie_file_select_regular_header %}
+                        <div v-if="showHeader" class="mollie-file-select__header">
+                            {% block mollie_file_select_regular_header_label %}
                                 <!-- eslint-disable-next-line vuejs-accessibility/label-has-for -->
                                 <label
                                     v-if="label"
-                                    class="sw-media-upload-v2__label"
+                                    class="mollie-file-select__label"
                                 >
                                     {{ label }}
                                 </label>
                             {% endblock %}
 
-                            {% block sw_media_upload_v2_regular_header_helptext %}
+                            {% block mollie_file_select_regular_header_helptext %}
                                 <sw-help-text
                                     v-if="helpText"
-                                    class="sw-media-upload-v2__help-text"
+                                    class="mollie-file-select__help-text"
                                     :text="helpText"
                                 />
                             {% endblock %}
                         </div>
                     {% endblock %}
 
-                    {% block sw_media_upload_v2_regular_drop_zone %}
+                    {% block mollie_file_select_regular_drop_zone %}
                         <div
                             ref="dropzone"
-                            class="sw-media-upload-v2__dropzone"
+                            class="mollie-file-select__dropzone"
                             :class="isDragActiveClass"
                         >
 
-                            {% block sw_media_upload_v2_preview %}
+                            {% block mollie_file_select_preview %}
                                 <template v-if="showPreview">
-                                    {% block sw_media_upload_v2_regular_preview_file %}
+                                    {% block mollie_file_select_regular_preview_file %}
                                         <sw-media-preview-v2
                                             v-if="source || preview"
-                                            class="sw-media-upload-v2__preview"
+                                            class="mollie-file-select__preview"
                                             :source="source || preview"
                                         />
                                     {% endblock %}
-                                    {% block sw_media_upload_v2_regular_preview_fallback %}
+                                    {% block mollie_file_select_regular_preview_fallback %}
                                         <div
                                             v-else
-                                            class="sw-media-upload-v2__preview is--fallback"
+                                            class="mollie-file-select__preview is--fallback"
                                         >
                                             <sw-icon
-                                                class="sw-media-upload-v2__fallback-icon"
+                                                class="mollie-file-select__fallback-icon"
                                                 name="default-object-image"
                                             />
                                         </div>
@@ -71,31 +71,31 @@
                                 </template>
 
                                 <template v-else>
-                                    {% block sw_media_upload_v2_regular_caption %}
-                                        <div class="sw-media-upload-v2__upload-caption">
+                                    {% block mollie_file_select_regular_caption %}
+                                        <div class="mollie-file-select__upload-caption">
                                             <sw-icon name="default-action-cloud-upload" />
-                                            {{ $tc('global.sw-media-upload-v2.caption') }}
+                                            {{ $tc('global.mollie-file-select.caption', snippetPlurality) }}
                                         </div>
                                     {% endblock %}
                                 </template>
                             {% endblock %}
 
-                            {% block sw_media_upload_v2_actions %}
+                            {% block mollie_file_select_actions %}
                                 <div
-                                    class="sw-media-upload-v2__actions"
+                                    class="mollie-file-select__actions"
                                     :class="{ 'has--source': source }"
                                 >
 
                                     <div
                                         v-if="source"
-                                        class="sw-media-upload-v2__file-info"
+                                        class="mollie-file-select__file-info"
                                     >
-                                        <div class="sw-media-upload-v2__file-headline">
+                                        <div class="mollie-file-select__file-headline">
                                             {{ source | mediaName }}
                                         </div>
                                         <sw-icon
                                             v-if="!disabled"
-                                            class="sw-media-upload-v2__remove-icon"
+                                            class="mollie-file-select__remove-icon"
                                             name="small-default-x-line-small"
                                             small
                                             @click="onRemoveMediaItem"
@@ -103,17 +103,17 @@
                                     </div>
 
                                     <template v-else>
-                                        {% block sw_media_upload_v2_regular_actions_add %}
+                                        {% block mollie_file_select_regular_actions_add %}
                                             <template>
-                                                {% block sw_media_upload_v2_regular_upload_button %}
+                                                {% block mollie_file_select_regular_upload_button %}
                                                     <sw-button
-                                                        class="sw-media-upload-v2__button upload"
+                                                        class="mollie-file-select__button upload"
                                                         variant="ghost"
                                                         size="small"
                                                         :disabled="disabled"
                                                         @click="onClickUpload"
                                                     >
-                                                        {{ $tc('global.sw-media-upload-v2.buttonFileUpload') }}
+                                                        {{ $tc('global.mollie-file-select.button', snippetPlurality) }}
                                                     </sw-button>
                                                 {% endblock %}
                                             </template>
@@ -128,16 +128,16 @@
             {% endblock %}
         </div>
 
-        {% block sw_media_upload_v2_file_input %}
+        {% block mollie_file_select_file_input %}
             <form
                 ref="fileForm"
-                class="sw-media-upload-v2__form"
+                class="mollie-file-select__form"
             >
                 <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
                 <input
                     id="files"
                     ref="fileInput"
-                    class="sw-media-upload-v2__file-input"
+                    class="mollie-file-select__file-input"
                     type="file"
                     :accept="fileAccept"
                     :multiple="multiSelect"

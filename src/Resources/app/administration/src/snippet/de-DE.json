@@ -12,6 +12,10 @@
       "mollie_webhook_received_status_refunded": " Mollie Webhook empfangen (Rückerstattet)",
       "mollie_webhook_received_status_partially_refunded": " Mollie Webhook empfangen (Teilweise Rückerstattet)",
       "mollie_refund_started": " Mollie Rückerstattung gestartet"
+    },
+    "mollie-file-select": {
+      "caption": "Dateien hier ablegen",
+      "button": "Dateien auswählen | Datei auswählen"
     }
   },
   "mollie-payments": {

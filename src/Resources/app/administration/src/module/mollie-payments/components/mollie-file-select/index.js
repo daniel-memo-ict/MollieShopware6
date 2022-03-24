@@ -98,6 +98,10 @@ Component.register('mollie-file-select', {
             return !this.multiSelect;
         },
 
+        snippetPlurality() {
+            return this.multiSelect ? 1 : 0;
+        },
+
         hasPreviewFile() {
             return this.preview !== null;
         },
