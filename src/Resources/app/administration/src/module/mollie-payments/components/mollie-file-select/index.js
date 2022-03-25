@@ -2,10 +2,9 @@ import template from './mollie-file-select.html.twig';
 import './mollie-file-select.scss';
 
 // eslint-disable-next-line no-undef
-const { Component, Mixin } = Shopware;
+const { Component } = Shopware;
 // eslint-disable-next-line no-undef
 const { fileReader } = Shopware.Utils;
-// eslint-disable-next-line no-undef
 
 /**
  * @status ready
@@ -20,12 +19,6 @@ const { fileReader } = Shopware.Utils;
  */
 Component.register('mollie-file-select', {
     template,
-
-    inject: ['repositoryFactory', 'mediaService', 'configService'],
-
-    mixins: [
-        Mixin.getByName('notification'),
-    ],
 
     props: {
         source: {
@@ -58,12 +51,6 @@ Component.register('mollie-file-select', {
 
         helpText: {
             type: String,
-            required: false,
-            default: null,
-        },
-
-        sourceContext: {
-            type: Object,
             required: false,
             default: null,
         },
@@ -121,6 +108,20 @@ Component.register('mollie-file-select', {
         },
     },
 
+    filters: {
+        mediaName(value, fallback = '') {
+            if (!value) {
+                return fallback;
+            }
+
+            if ((!value.fileName) || (!value.extension)) {
+                return fallback;
+            }
+
+            return `${value.fileName}.${value.extension}`;
+        },
+    },
+
     mounted() {
         this.mountedComponent();
     },
@@ -130,7 +131,6 @@ Component.register('mollie-file-select', {
     },
 
     methods: {
-
         mountedComponent() {
             if (this.$refs.dropzone) {
                 ['dragover', 'drop'].forEach((event) => {
@@ -167,7 +167,7 @@ Component.register('mollie-file-select', {
                 return;
             }
 
-            this.handleUpload(newMediaFiles);
+            this.handleFiles(newMediaFiles);
         },
 
         onDragEnter() {
@@ -188,7 +188,7 @@ Component.register('mollie-file-select', {
         /*
          * Click handler
          */
-        onClickUpload() {
+        onOpenFileSelect() {
             this.$refs.fileInput.click();
         },
 
@@ -196,15 +196,20 @@ Component.register('mollie-file-select', {
             const newMediaFiles = Array.from(this.$refs.fileInput.files);
 
             if (newMediaFiles.length) {
-                this.handleUpload(newMediaFiles);
+                this.handleFiles(newMediaFiles);
             }
             this.$refs.fileForm.reset();
+        },
+
+        onRemoveFile() {
+            this.preview = null;
+            this.$emit('file-removed');
         },
 
         /*
          * Helper functions
          */
-        async handleUpload(newMediaFiles) {
+        async handleFiles(newMediaFiles) {
             if (!this.multiSelect) {
                 newMediaFiles = [newMediaFiles.pop()];
                 this.preview = newMediaFiles[0];

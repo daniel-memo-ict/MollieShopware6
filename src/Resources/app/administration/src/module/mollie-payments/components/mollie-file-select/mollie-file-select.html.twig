@@ -97,21 +97,21 @@
                                             v-if="!disabled"
                                             class="mollie-file-select__remove-icon"
                                             name="small-default-x-line-small"
-                                            small
-                                            @click="onRemoveMediaItem"
+                                            :small="variant === 'compact'"
+                                            @click="onRemoveFile"
                                         />
                                     </div>
 
                                     <template v-else>
                                         {% block mollie_file_select_regular_actions_add %}
                                             <template>
-                                                {% block mollie_file_select_regular_upload_button %}
+                                                {% block mollie_file_select_regular_select_button %}
                                                     <sw-button
-                                                        class="mollie-file-select__button upload"
+                                                        class="mollie-file-select__button"
                                                         variant="ghost"
                                                         size="small"
                                                         :disabled="disabled"
-                                                        @click="onClickUpload"
+                                                        @click="onOpenFileSelect"
                                                     >
                                                         {{ $tc('global.mollie-file-select.button', snippetPlurality) }}
                                                     </sw-button>
