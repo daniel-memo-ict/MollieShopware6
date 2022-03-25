@@ -1,0 +1,36 @@
+<sw-modal class="mollie-import-modal"
+          :title="$tc('mollie-payments.config.support.modalTitle')"
+          @modal-close="$emit('close')">
+
+    <mollie-file-select :allowMultiSelect="false"
+                        :source="source"
+                        label="Select config file"
+                        variant="compact"
+                        fileAccept="application/json"
+                        @file-selected="selectFiles"
+                        @file-removed="source = null"
+    ></mollie-file-select>
+
+    <sw-container v-if="source">
+        <sw-container
+    </sw-container>
+
+    <template #modal-footer>
+        <sw-button size="small"
+{#                   :isLoading="isSubmitting"#}
+                   @click="$emit('close')">
+            {{ $tc('mollie-payments.config.support.btnCancel') }}
+        </sw-button>
+
+        <sw-button-process size="small"
+                           variant="primary"
+                           :animationTimeout="2500"
+{#                           :disabled="isLoading || !canSubmit"#}
+{#                           :isLoading="isSubmitting"#}
+                           :processSuccess="false"
+{#                           @click="onRequestSupport"#}
+                           @process-finish="mailSent = false">
+            {{ $tc('mollie-payments.config.support.btnConfirm') }}
+        </sw-button-process>
+    </template>
+</sw-modal>

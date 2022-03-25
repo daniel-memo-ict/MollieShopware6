@@ -4,6 +4,7 @@ import './components/mollie-file-select';
 import './components/mollie-pluginconfig-section-info';
 import './components/mollie-pluginconfig-section-api';
 import './components/mollie-pluginconfig-section-payments';
+import './components/mollie-pluginconfig-import-modal';
 import './components/mollie-pluginconfig-support-modal';
 import './components/mollie-tracking-info';
 import './components/mollie-refund-manager';
