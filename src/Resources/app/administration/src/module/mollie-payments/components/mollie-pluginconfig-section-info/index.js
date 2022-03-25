@@ -14,7 +14,8 @@ Component.register('mollie-pluginconfig-section-info', {
 
     data() {
         return {
-            isSupportOpen: true,
+            isImportOpen: true,
+            isSupportOpen: false,
         };
     },
 
@@ -44,7 +45,11 @@ Component.register('mollie-pluginconfig-section-info', {
 
     methods: {
         openConfigImport() {
-            // TODO create and open a configuration import modal
+            this.isImportOpen = true;
+        },
+
+        closeConfigImport() {
+            this.isImportOpen = false;
         },
 
         openSupport() {

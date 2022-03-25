@@ -28,6 +28,7 @@
         <div class="description-footer">
             {{ $tc('mollie-payments.config.info.descriptionFooter') }}
         </div>
+
     </div>
     <div class="col-right">
         <sw-button class="btn-action" link="https://github.com/mollie/Shopware6/wiki">
@@ -48,5 +49,6 @@
             {{ $tc('mollie-payments.config.info.btnTroubleshooting') }}
         </sw-external-link>
     </div>
+    <mollie-pluginconfig-import-modal v-if="isImportOpen" @close="closeConfigImport"/>
     <mollie-pluginconfig-support-modal v-if="isSupportOpen" @close="closeSupport"/>
 </sw-container>
