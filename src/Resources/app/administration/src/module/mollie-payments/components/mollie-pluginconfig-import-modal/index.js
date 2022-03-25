@@ -50,6 +50,23 @@ Component.register('mollie-pluginconfig-import-modal', {
         sourceConfig() {
             return this.configs[this.sourceSalesChannel].config;
         },
+
+        changeSet() {
+            return this.schema
+                .map(card => {
+                    card.elements = card.elements.filter(element => Object.keys(this.sourceConfig).includes(element.name));
+                    return card;
+                })
+                .filter(card => {
+                    // eslint-disable-next-line no-prototype-builtins
+                    return card.hasOwnProperty('elements')
+                        && card.elements.length > 0
+                        && card.elements
+                            .some(element => Object.keys(this.sourceConfig).includes(element.name));
+                })
+        },
+    },
+
     created() {
         this.createdComponent();
     },
@@ -58,12 +75,12 @@ Component.register('mollie-pluginconfig-import-modal', {
         createdComponent() {
             this.loadCurrentConfigSchema();
         },
+
         loadCurrentConfigSchema() {
             this.systemConfigApiService
                 .getConfig(CONFIG_DOMAIN)
                 .then(response => {
                     this.schema = response;
-                    console.log(response);
                 })
         },
 
@@ -109,7 +126,7 @@ Component.register('mollie-pluginconfig-import-modal', {
                             this.configs.push(element);
                         });
 
-                    if(this.configs.length === 0) {
+                    if (this.configs.length === 0) {
                         throw this.$tc('mollie-payments.config.import.error.invalidConfig', 0, {
                             fileName: this.source.fileName,
                             extension: this.source.extension,

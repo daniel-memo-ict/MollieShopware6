@@ -28,6 +28,15 @@
                 show-clearable-button
                 size="medium"/>
         </sw-container>
+
+        <div v-for="card in changeSet">
+            {{ card.title[currentLocale] }}
+
+            <div v-for="element in card.elements">
+{#                {{ element }}#}
+                {{ element.config.label[currentLocale] }} => {{ sourceConfig[element.name] }}
+            </div>
+        </div>
     </sw-container>
 
     <template #modal-footer>
