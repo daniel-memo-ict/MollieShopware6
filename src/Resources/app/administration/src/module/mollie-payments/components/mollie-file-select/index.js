@@ -225,7 +225,6 @@ Component.register('mollie-file-select', {
                 };
             });
 
-            console.log(uploadData);
             this.$emit('file-selected', uploadData)
         },
     },

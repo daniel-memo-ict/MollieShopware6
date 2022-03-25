@@ -63,6 +63,17 @@
           "link": "Open Mollie Payment Limits"
         }
       },
+      "import": {
+        "modalTitle": "Import support configuration",
+        "btnCancel": "Cancel",
+        "btnConfirm": "Import",
+        "selectFile": "Select configuration file",
+        "globalSettings": "Global settings",
+        "error": {
+          "jsonParseError": "Could not parse the selected file \"{fileName}.{extension}\" as JSON",
+          "invalidConfig": "The selected file \"{fileName}.{extension}\" does not contain a valid configuration"
+        }
+      },
       "support": {
         "modalTitle": "Request support from Mollie",
         "btnCancel": "Cancel",

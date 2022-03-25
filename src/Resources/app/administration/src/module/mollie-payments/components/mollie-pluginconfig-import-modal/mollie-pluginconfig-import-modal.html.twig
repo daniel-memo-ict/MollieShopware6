@@ -1,36 +1,51 @@
 <sw-modal class="mollie-import-modal"
-          :title="$tc('mollie-payments.config.support.modalTitle')"
+          :title="$tc('mollie-payments.config.import.modalTitle')"
           @modal-close="$emit('close')">
 
     <mollie-file-select :allowMultiSelect="false"
                         :source="source"
-                        label="Select config file"
+                        :label="$tc('mollie-payments.config.import.selectFile')"
                         variant="compact"
                         fileAccept="application/json"
                         @file-selected="selectFiles"
                         @file-removed="source = null"
     ></mollie-file-select>
 
-    <sw-container v-if="source">
-        <sw-container
+    <sw-container v-if="source && configs.length > 0">
+        <sw-container gap="16px" columns="1fr 24px 1fr" align="center">
+            <sw-single-select v-model="sourceSalesChannel"
+                              :options="sourceSalesChannelOptions"
+                              size="medium"/>
+
+            <sw-icon name="small-arrow-small-right"></sw-icon>
+
+            <sw-entity-single-select
+                v-model="targetSalesChannel"
+{#                :disabled="disabled"#}
+                :placeholder="$tc('mollie-payments.config.import.globalSettings')"
+                :reset-option="$tc('mollie-payments.config.import.globalSettings')"
+                entity="sales_channel"
+                show-clearable-button
+                size="medium"/>
+        </sw-container>
     </sw-container>
 
     <template #modal-footer>
         <sw-button size="small"
-{#                   :isLoading="isSubmitting"#}
+            {#                   :isLoading="isSubmitting" #}
                    @click="$emit('close')">
-            {{ $tc('mollie-payments.config.support.btnCancel') }}
+            {{ $tc('mollie-payments.config.import.btnCancel') }}
         </sw-button>
 
         <sw-button-process size="small"
                            variant="primary"
                            :animationTimeout="2500"
-{#                           :disabled="isLoading || !canSubmit"#}
-{#                           :isLoading="isSubmitting"#}
+            {#                           :disabled="isLoading || !canSubmit" #}
+            {#                           :isLoading="isSubmitting" #}
                            :processSuccess="false"
-{#                           @click="onRequestSupport"#}
+            {#                           @click="onRequestSupport" #}
                            @process-finish="mailSent = false">
-            {{ $tc('mollie-payments.config.support.btnConfirm') }}
+            {{ $tc('mollie-payments.config.import.btnConfirm') }}
         </sw-button-process>
     </template>
 </sw-modal>
