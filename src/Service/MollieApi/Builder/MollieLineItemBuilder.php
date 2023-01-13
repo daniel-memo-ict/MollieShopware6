@@ -4,7 +4,6 @@ namespace Kiener\MolliePayments\Service\MollieApi\Builder;
 
 use Kiener\MolliePayments\Compatibility\Gateway\CompatibilityGatewayInterface;
 use Kiener\MolliePayments\Exception\LineItemIncorrectPriceException;
-use Kiener\MolliePayments\Exception\MissingPriceLineItemException;
 use Kiener\MolliePayments\Hydrator\MollieLineItemHydrator;
 use Kiener\MolliePayments\Service\MollieApi\Fixer\RoundingDifferenceFixer;
 use Kiener\MolliePayments\Service\MollieApi\LineItemDataExtractor;
@@ -143,13 +142,29 @@ class MollieLineItemBuilder
         }
 
         foreach ($lineItems as $item) {
+            /** @var CalculatedPrice $itemPrice */
+            $itemPrice = $item->getPrice();
+
             try {
                 $this->orderLineItemValidator->validate($item);
             }
             catch (LineItemIncorrectPriceException $e) {
-            }
+                # Example, a gift from https://store.shopware.com/meteo48490584251/free-gift-plugin.html
+                # or custom products https://issues.shopware.com/issues/CUS-539
 
-            $itemPrice = $item->getPrice();
+                if ($e->getParameter('totalPrice') !== 0.0) {
+                    # If totalPrice is not 0, then we're not going to attempt to fix the unitPrice.
+                    # Rethrow the exception so it's handled properly upstream.
+                    throw $e;
+                }
+
+                # At this point the totalPrice is 0, and unitPrice is NOT 0
+                # Set unitPrice to 0 so the calculation is correct.
+                # There is no setUnitPrice function, so we (ab)use assign to set the value.
+                $itemPrice->assign([
+                    'unitPrice' => 0.0
+                ]);
+            }
 
             $price = $this->priceCalculator->calculateLineItemPrice(
                 $itemPrice,
