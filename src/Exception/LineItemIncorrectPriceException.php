@@ -12,7 +12,7 @@ class LineItemIncorrectPriceException extends ShopwareHttpException
 {
     public function __construct(OrderLineItemEntity $lineItem)
     {
-        $message = "OrderLineItem \"{{label}}\" ({{id}}) has incorrect pricing. ({{currencySymbol}}{{unitPrice}} x {{quantity}} = {{currencySymbol}}{{totalPrice}})";
+        $message = "OrderLineItem \"{{label}}\" ({{id}}) has incorrect pricing. ({{unitPrice}} x {{quantity}} = {{totalPrice}})";
 
         $parameters = [
             'id' => $lineItem->getId(),
@@ -22,7 +22,6 @@ class LineItemIncorrectPriceException extends ShopwareHttpException
             'quantity' => $lineItem->getPrice()->getQuantity() ?? $lineItem->getQuantity(),
             'unitPrice' => $lineItem->getPrice()->getUnitPrice() ?? $lineItem->getUnitPrice(),
             'totalPrice' => $lineItem->getPrice()->getTotalPrice() ?? $lineItem->getTotalPrice(),
-            //'currencySymbol' => $lineItem->getOrder()->getCurrency()->getSymbol(),
         ];
 
         parent::__construct($message, $parameters);
