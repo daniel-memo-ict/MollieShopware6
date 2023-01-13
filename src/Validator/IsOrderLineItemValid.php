@@ -3,6 +3,7 @@
 
 namespace Kiener\MolliePayments\Validator;
 
+use Kiener\MolliePayments\Exception\LineItemIncorrectPriceException;
 use Kiener\MolliePayments\Exception\MissingPriceLineItemException;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
@@ -15,10 +16,14 @@ class IsOrderLineItemValid
      */
     public function validate(OrderLineItemEntity $lineItemEntity): void
     {
-        if ($lineItemEntity->getPrice() instanceof CalculatedPrice) {
-            return;
+        if (!$lineItemEntity->getPrice() instanceof CalculatedPrice) {
+            throw new MissingPriceLineItemException($lineItemEntity->getId());
         }
 
-        throw new MissingPriceLineItemException($lineItemEntity->getId());
+        $price = $lineItemEntity->getPrice();
+
+        if($price->getUnitPrice() * $price->getQuantity() !== $price->getTotalPrice()) {
+            throw new LineItemIncorrectPriceException($lineItemEntity);
+        }
     }
 }

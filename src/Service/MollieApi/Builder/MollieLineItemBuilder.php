@@ -3,6 +3,7 @@
 namespace Kiener\MolliePayments\Service\MollieApi\Builder;
 
 use Kiener\MolliePayments\Compatibility\Gateway\CompatibilityGatewayInterface;
+use Kiener\MolliePayments\Exception\LineItemIncorrectPriceException;
 use Kiener\MolliePayments\Exception\MissingPriceLineItemException;
 use Kiener\MolliePayments\Hydrator\MollieLineItemHydrator;
 use Kiener\MolliePayments\Service\MollieApi\Fixer\RoundingDifferenceFixer;
@@ -141,15 +142,14 @@ class MollieLineItemBuilder
             return $lines;
         }
 
-
         foreach ($lineItems as $item) {
-            $this->orderLineItemValidator->validate($item);
-            $extraData = $this->lineItemDataExtractor->extractExtraData($item);
-            $itemPrice = $item->getPrice();
-
-            if (!$itemPrice instanceof CalculatedPrice) {
-                throw new MissingPriceLineItemException((string)$item->getProductId());
+            try {
+                $this->orderLineItemValidator->validate($item);
             }
+            catch (LineItemIncorrectPriceException $e) {
+            }
+
+            $itemPrice = $item->getPrice();
 
             $price = $this->priceCalculator->calculateLineItemPrice(
                 $itemPrice,
@@ -157,6 +157,8 @@ class MollieLineItemBuilder
                 $taxStatus,
                 $isVerticalTaxCalculation
             );
+
+            $extraData = $this->lineItemDataExtractor->extractExtraData($item);
 
             $mollieLineItem = new MollieLineItem(
                 (string)$this->getLineItemType($item),
